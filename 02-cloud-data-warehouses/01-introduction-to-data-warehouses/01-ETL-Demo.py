@@ -105,3 +105,21 @@ result = execute_query(
 
 print(pd.DataFrame(result))
 
+
+query = """
+SELECT 
+    sum(p.amount) as revenue,
+    EXTRACT(month from p.payment_date) as month
+from payment p 
+group by month
+order by revenue desc 
+limit 10;
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+
+print(pd.DataFrame(result))
