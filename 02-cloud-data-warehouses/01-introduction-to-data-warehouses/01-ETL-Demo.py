@@ -123,3 +123,29 @@ result = execute_query(
 )
 
 print(pd.DataFrame(result))
+
+query = """
+SELECT 
+    f.title,
+    ci.city,
+    EXTRACT (month from p.payment_date) as month,
+    sum(p.amount) as revenue
+from payment p
+join rental r on (p.rental_id=r.rental_id)
+join inventory i on (r.inventory_id = i.inventory_id)
+join film f on (i.film_id=f.film_id)
+join customer c on (p.customer_id=c.customer_id)
+join address a on (c.address_id=a.address_id)
+join city ci on (a.city_id = ci.city_id)
+group by (f.title, ci.city, month)
+order by month, revenue desc 
+limit 10;
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+
+print(pd.DataFrame(result))
