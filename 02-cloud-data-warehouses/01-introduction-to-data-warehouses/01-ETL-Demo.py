@@ -86,3 +86,22 @@ result = execute_query(
 print(pd.DataFrame(result))
 
 
+query = """
+SELECT ci.city, sum(p.amount) as revenue
+from payment p 
+join customer c on (p.customer_id=c.customer_id)
+join address a on (c.address_id=a.address_id)
+join city ci on (a.city_id = ci.city_id)
+group by ci.city
+order by revenue desc
+limit 5;
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+
+print(pd.DataFrame(result))
+
