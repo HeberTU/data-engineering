@@ -47,3 +47,42 @@ result = execute_query(
 )
 
 pd.DataFrame(result, columns=['district', 'n'])
+
+query = """
+SELECT f.title, p.amount, p.payment_date, p.customer_id 
+from payment p 
+join rental r on (p.rental_id=r.rental_id)
+join inventory i on (r.inventory_id=i.inventory_id)
+join film f on (i.film_id = f.film_id)
+limit 5;
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+
+print(pd.DataFrame(result))
+
+
+query = """
+SELECT f.title, sum(p.amount) as revenue
+from payment p 
+join rental r on (p.rental_id=r.rental_id)
+join inventory i on (r.inventory_id=i.inventory_id)
+join film f on (i.film_id = f.film_id)
+group by title
+order by revenue desc
+limit 5;
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+
+print(pd.DataFrame(result))
+
+
