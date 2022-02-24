@@ -150,8 +150,9 @@ result = execute_query(
 
 print(pd.DataFrame(result))
 
-# Step 4
+# Step 4: creating start schema.
 
+## dimDate
 query = """
 CREATE TABLE dimDate (
 date_key INTEGER  NOT NULL PRIMARY KEY,
@@ -184,6 +185,37 @@ result = execute_query(
     fetch=True
 )
 print(pd.DataFrame(result))
+
+## Customer Dimension
+query = """
+CREATE TABLE dimCustomer
+(
+  customer_key SERIAL PRIMARY KEY,
+  customer_id  smallint NOT NULL,
+  first_name   varchar(45) NOT NULL,
+  last_name    varchar(45) NOT NULL,
+  email        varchar(50),
+  address      varchar(50) NOT NULL,
+  address2     varchar(50),
+  district     varchar(20) NOT NULL,
+  city         varchar(50) NOT NULL,
+  country      varchar(50) NOT NULL,
+  postal_code  varchar(10),
+  phone        varchar(20) NOT NULL,
+  active       smallint NOT NULL,
+  create_date  timestamp NOT NULL,
+  start_date   date NOT NULL,
+  end_date     date NOT NULL
+);
+"""
+
+execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=False
+)
+
 
 query = """
 INSERT INTO dimDate (date_key, date, year, quarter, month, day, week, is_weekend)
