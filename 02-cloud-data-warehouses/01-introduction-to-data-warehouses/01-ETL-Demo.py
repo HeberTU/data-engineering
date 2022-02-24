@@ -348,3 +348,32 @@ execute_query(
     conn=conn,
     fetch=False
 )
+
+
+## Customer Dimension
+query = """
+INSERT INTO dimMovie (movie_key, film_id, title, description, release_year, language, 
+original_language, rental_duration, length, rating, special_features)
+SELECT
+    f.film_id as movie_key,
+    f.film_id,
+    f.title,
+    f.description,
+    f.release_year,
+    l.name as language,
+    orig_lang.name as original_language,
+    f.rental_duration,
+    f.length,
+    f.rating,
+    f.special_features
+FROM film f
+JOIN language l              ON (f.language_id=l.language_id)
+LEFT JOIN language orig_lang ON (f.original_language_id = orig_lang.language_id);
+"""
+
+execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=False
+)
