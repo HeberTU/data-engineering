@@ -288,6 +288,8 @@ execute_query(
     fetch=False
 )
 
+# Insert into Tables
+## Date Dimension
 query = """
 INSERT INTO dimDate (date_key, date, year, quarter, month, day, week, is_weekend)
 SELECT DISTINCT(TO_CHAR(payment_date :: DATE, 'yyyyMMDD')::integer) AS date_key,
@@ -302,6 +304,42 @@ SELECT DISTINCT(TO_CHAR(payment_date :: DATE, 'yyyyMMDD')::integer) AS date_key,
          ELSE false                                                 
          END                                                        AS is_weekend
 FROM payment;
+"""
+
+execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=False
+)
+
+
+## Customer Dimension
+query = """
+INSERT INTO dimCustomer (customer_key, customer_id, first_name, last_name, email, address, 
+                         address2, district, city, country, postal_code, phone, active, 
+                         create_date, start_date, end_date)
+SELECT 
+    c.customer_id as customer_key,
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    c.email,
+    a.address,
+    a.address2,
+    a.district,
+    ci.city,
+    co.country,
+    a.postal_code,
+    a.phone,
+    c.active,
+    c.create_date,
+       now()         AS start_date,
+       now()         AS end_date
+FROM customer c
+JOIN address a  ON (c.address_id = a.address_id)
+JOIN city ci    ON (a.city_id = ci.city_id)
+JOIN country co ON (ci.country_id = co.country_id);
 """
 
 execute_query(
