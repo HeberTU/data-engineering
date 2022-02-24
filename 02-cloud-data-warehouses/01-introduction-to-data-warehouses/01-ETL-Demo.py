@@ -409,3 +409,27 @@ execute_query(
     conn=conn,
     fetch=False
 )
+
+
+## Store Dimension
+query = """
+INSERT INTO factSales (sales_key, date_key, customer_key, movie_key,
+ store_key, sales_amount)
+SELECT
+    p.payment_id as sales_key,
+    TO_CHAR(p.payment_date :: DATE, 'yyyyMMDD')::integer as date_key,
+    p.customer_id as customer_key,
+    i.film_id as movie_key,
+    i.store_id as store_key,
+    p.amount as sales_amount
+FROM payment p
+LEFT JOIN rental r ON (p.rental_id=r.rental_id)
+LEFT JOIN inventory i ON (r.inventory_id=i.inventory_id);
+"""
+
+execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=False
+)
