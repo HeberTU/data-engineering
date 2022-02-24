@@ -149,3 +149,38 @@ result = execute_query(
 )
 
 print(pd.DataFrame(result))
+
+# Step 4
+
+query = """
+CREATE TABLE dimDate (
+date_key INTEGER  NOT NULL PRIMARY KEY,
+date DATE NOT NULL,
+year SMALLINT NOT NULL,
+quarter SMALLINT NOT NULL,
+month SMALLINT NOT NULL,
+day SMALLINT NOT NULL,
+week SMALLINT NOT NULL,
+is_weekend BOOLEAN NOT NULL      
+);
+"""
+
+execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=False
+)
+
+query = """
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name   = 'dimdate'
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+print(pd.DataFrame(result))
