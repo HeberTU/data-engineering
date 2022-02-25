@@ -80,3 +80,5 @@ result = execute_query(
 )
 
 print(pd.DataFrame(result))
+
+conn.close()
