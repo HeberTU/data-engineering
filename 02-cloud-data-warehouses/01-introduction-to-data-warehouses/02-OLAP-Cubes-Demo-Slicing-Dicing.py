@@ -122,4 +122,30 @@ result = execute_query(
 print(pd.DataFrame(result))
 
 
+# Grouping Sets
+query = """
+SELECT d.month, c.country, sum(s.sales_amount) as revenue  
+from factsales s 
+LEFT join dimdate d on (s.date_key=d.date_key)
+LEFT join dimcustomer c on (s.customer_key=c.customer_key)
+GROUP BY 
+    GROUPING SETS (
+        (),
+        (month),
+        (country),
+        (month, country)   
+    )
+ORDER BY month, country, revenue desc;
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+
+result = pd.DataFrame(result)
+result.columns = ['month', 'country', 'revenue']
+result[result.country == 'Australia']
+
 conn.close()
