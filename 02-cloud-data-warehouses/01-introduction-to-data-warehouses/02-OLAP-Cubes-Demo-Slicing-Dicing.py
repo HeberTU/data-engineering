@@ -101,4 +101,25 @@ result = execute_query(
 
 print(pd.DataFrame(result))
 
+# Drill-down
+query = """
+SELECT d.day, m.rating, c.district, sum(s.sales_amount) as revenue  
+from factsales s 
+LEFT join dimdate d on (s.date_key=d.date_key)
+LEFT join dimmovie m on (s.movie_key=m.movie_key)
+LEFT join dimcustomer c on (s.customer_key=c.customer_key)
+GROUP BY day, rating, district
+ORDER BY revenue desc
+limit 10;
+"""
+result = execute_query(
+    query=query,
+    err_msg="KO",
+    conn=conn,
+    fetch=True
+)
+
+print(pd.DataFrame(result))
+
+
 conn.close()
